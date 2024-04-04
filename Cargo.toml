@@ -1,4 +1,4 @@
 [workspace]
 resolver = "2"
-members = ["crates/html"]
+members = [ "crates/cersis","crates/html"]
 
