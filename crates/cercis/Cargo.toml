@@ -1,5 +1,5 @@
 [package]
-name = "cercis-rsx"
+name = "cercis"
 version.workspace = true
 edition = "2021"
 
