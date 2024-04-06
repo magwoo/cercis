@@ -4,33 +4,31 @@ use quote::{quote, ToTokens};
 use syn::parse::{Parse, ParseStream};
 use syn::{braced, Result, Token};
 
-use crate::attribute::Attribute;
-
 mod attribute;
 
 #[proc_macro]
 pub fn rsx(input: TokenStream) -> TokenStream {
-    match syn::parse::<BodyCall>(input) {
+    match syn::parse::<ParseRoot>(input) {
         Ok(body) => body.into_token_stream().into(),
         Err(err) => err.to_compile_error().into(),
     }
 }
 
-struct BodyCall(Vec<BodyNode>);
+struct ParseRoot(Vec<ParseNode>);
 
-impl Parse for BodyCall {
+impl Parse for ParseRoot {
     fn parse(input: ParseStream) -> Result<Self> {
         let mut nodes = Vec::new();
 
         while !input.is_empty() {
-            nodes.push(input.parse::<BodyNode>()?);
+            nodes.push(input.parse::<ParseNode>()?);
         }
 
         Ok(Self(nodes))
     }
 }
 
-impl ToTokens for BodyCall {
+impl ToTokens for ParseRoot {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         let nodes = self.0.as_slice();
 
@@ -42,12 +40,12 @@ impl ToTokens for BodyCall {
     }
 }
 
-enum BodyNode {
-    Element(BodyElement),
+enum ParseNode {
+    Element(ParseElement),
     Content(String),
 }
 
-impl Parse for BodyNode {
+impl Parse for ParseNode {
     fn parse(input: ParseStream) -> Result<Self> {
         let name = input.parse::<syn::Ident>()?;
         let mut children = Vec::new();
@@ -65,7 +63,7 @@ impl Parse for BodyNode {
             }
         }
 
-        Ok(Self::Element(BodyElement {
+        Ok(Self::Element(ParseElement {
             name: name.to_string(),
             attributes: Vec::new(),
             children,
@@ -73,22 +71,22 @@ impl Parse for BodyNode {
     }
 }
 
-impl ToTokens for BodyNode {
+impl ToTokens for ParseNode {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         match self {
-            BodyNode::Element(element) => {
+            ParseNode::Element(element) => {
                 let name = element.name.as_str();
                 let children = element.children.as_slice();
 
                 quote!(Node::Element(Element::new(#name)#(.child(#children))*)).to_tokens(tokens)
             }
-            BodyNode::Content(content) => quote!(Node::content(#content)).to_tokens(tokens),
+            ParseNode::Content(content) => quote!(Node::content(#content)).to_tokens(tokens),
         }
     }
 }
 
-struct BodyElement {
+struct ParseElement {
     pub name: String,
-    pub attributes: Vec<Attribute>,
-    pub children: Vec<BodyNode>,
+    pub attributes: Vec<attribute::Attribute>,
+    pub children: Vec<ParseNode>,
 }
