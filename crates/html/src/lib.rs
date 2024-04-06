@@ -2,6 +2,7 @@ use crate::attribute::Attribute;
 
 pub mod attribute;
 pub mod builder;
+pub mod prelude;
 
 pub struct Component(Vec<Node>);
 
