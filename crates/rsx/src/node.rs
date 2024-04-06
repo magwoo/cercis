@@ -2,7 +2,8 @@ use crate::prelude::*;
 
 pub enum ParseNode {
     Element(ParseElement),
-    Content(String),
+    Text(String),
+    TextFmt(String),
 }
 
 impl Parse for ParseNode {
@@ -21,8 +22,10 @@ impl Parse for ParseNode {
         while !block.is_empty() {
             if block.peek(syn::LitStr) {
                 let text = block.parse::<syn::LitStr>()?.value();
-
-                children.push(Self::Content(text));
+                match text.contains('{') {
+                    true => children.push(Self::TextFmt(text)),
+                    false => children.push(Self::Text(text)),
+                }
             } else if block.peek(syn::Ident) {
                 children.push(block.parse::<Self>()?)
             }
@@ -44,9 +47,10 @@ impl ToTokens for ParseNode {
                 let attributes = element.attributes.as_slice();
                 let children = element.children.as_slice();
 
-                quote!(Node::Element(Element::new(#name)#(.attr(#attributes))*#(.child(#children))*)).to_tokens(tokens)
+                quote!(Node::Element(Element::new(#name)#(.attr(#attributes))*#(.child(#children))*))
             }
-            ParseNode::Content(content) => quote!(Node::content(#content)).to_tokens(tokens),
-        }
+            ParseNode::Text(text) => quote!(Node::content(#text)),
+            ParseNode::TextFmt(text) => quote!(Node::content(format!(#text))),
+        }.to_tokens(tokens)
     }
 }
