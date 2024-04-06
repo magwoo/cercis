@@ -8,9 +8,26 @@ pub struct ParseAttribute {
 impl Parse for ParseAttribute {
     fn parse(input: ParseStream) -> Result<Self> {
         let name = input.parse::<syn::Ident>()?.to_string();
-        let _ = input.parse::<Token![:]>()?;
-        let value = input.parse::<syn::LitStr>()?.value();
-        let _ = input.parse::<Token![,]>()?;
+        input.parse::<Token![:]>()?;
+        let value = input.parse::<syn::Lit>()?;
+
+        match input.parse::<Token![,]>() {
+            Err(_) if !input.is_empty() => {
+                return Err(syn::Error::new(
+                    value.span(),
+                    "Expected comma after attribute `,`",
+                ))
+            }
+            _ => (),
+        }
+
+        let value = match value {
+            syn::Lit::Str(str) => str.value(),
+            syn::Lit::Int(num) => num.to_string(),
+            syn::Lit::Float(num) => num.to_string(),
+            syn::Lit::Bool(value) => value.value().to_string(),
+            _ => return Err(syn::Error::new(value.span(), "Unexpected value")),
+        };
 
         Ok(Self {
             name,
