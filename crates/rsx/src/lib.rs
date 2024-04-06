@@ -32,7 +32,7 @@ impl ToTokens for ParseRoot {
         let nodes = self.0.as_slice();
 
         quote!({
-            use cercis_html::*;
+            use cercis_html::prelude::*;
             Component::new()#(.node(#nodes))*
         })
         .to_tokens(tokens)

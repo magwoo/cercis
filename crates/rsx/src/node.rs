@@ -8,10 +8,15 @@ pub enum ParseNode {
 impl Parse for ParseNode {
     fn parse(input: ParseStream) -> Result<Self> {
         let name = input.parse::<syn::Ident>()?;
+        let mut attributes = Vec::new();
         let mut children = Vec::new();
 
         let block;
         braced!(block in input);
+
+        while block.peek(syn::Ident) && block.peek2(Token![:]) {
+            attributes.push(block.parse::<ParseAttribute>()?)
+        }
 
         while !block.is_empty() {
             if block.peek(syn::LitStr) {
@@ -25,7 +30,7 @@ impl Parse for ParseNode {
 
         Ok(Self::Element(ParseElement {
             name: name.to_string(),
-            attributes: Vec::new(),
+            attributes,
             children,
         }))
     }
@@ -36,9 +41,10 @@ impl ToTokens for ParseNode {
         match self {
             ParseNode::Element(element) => {
                 let name = element.name.as_str();
+                let attributes = element.attributes.as_slice();
                 let children = element.children.as_slice();
 
-                quote!(Node::Element(Element::new(#name)#(.child(#children))*)).to_tokens(tokens)
+                quote!(Node::Element(Element::new(#name)#(.attr(#attributes))*#(.child(#children))*)).to_tokens(tokens)
             }
             ParseNode::Content(content) => quote!(Node::content(#content)).to_tokens(tokens),
         }
