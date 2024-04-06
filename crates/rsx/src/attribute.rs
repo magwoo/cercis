@@ -26,7 +26,12 @@ impl Parse for ParseAttribute {
             syn::Lit::Int(num) => num.to_string(),
             syn::Lit::Float(num) => num.to_string(),
             syn::Lit::Bool(value) => value.value().to_string(),
-            _ => return Err(syn::Error::new(value.span(), "Unexpected value")),
+            _ => {
+                return Err(syn::Error::new(
+                    value.span(),
+                    "Unexpected attribute value type",
+                ))
+            }
         };
 
         Ok(Self {
