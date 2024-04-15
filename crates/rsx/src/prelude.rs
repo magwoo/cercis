@@ -6,4 +6,5 @@ pub use syn::{braced, Result, Token};
 
 pub use crate::attribute::*;
 pub use crate::element::*;
+pub use crate::expr::*;
 pub use crate::node::*;

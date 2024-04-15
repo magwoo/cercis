@@ -4,6 +4,7 @@ pub enum ParseNode {
     Element(ParseElement),
     Text(String),
     TextFmt(String),
+    IfExpr(ParseIfExpr),
 }
 
 impl Parse for ParseNode {
