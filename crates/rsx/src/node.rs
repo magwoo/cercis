@@ -1,57 +1,55 @@
+use element::Element;
+use expr::IfExpr;
+use fmt::TextFmt;
+use forloop::ForLoop;
+use text::Text;
+
 use crate::prelude::*;
 
-pub enum ParseNode {
-    Element(ParseElement),
-    Text(String),
-    TextFmt(String),
-    IfExpr(ParseIfExpr),
+mod element;
+mod expr;
+mod fmt;
+mod forloop;
+mod text;
+
+pub enum NodeTree {
+    Text(Text),
+    TextFmt(TextFmt),
+    IfExpr(IfExpr),
+    ForLoop(ForLoop),
+    Element(Element),
 }
 
-impl Parse for ParseNode {
+impl Parse for NodeTree {
     fn parse(input: ParseStream) -> Result<Self> {
-        let name = input.parse::<syn::Ident>()?;
-        let mut attributes = Vec::new();
-        let mut children = Vec::new();
-
-        let block;
-        braced!(block in input);
-
-        while block.peek(syn::Ident) && block.peek2(Token![:]) {
-            attributes.push(block.parse::<ParseAttribute>()?)
+        if input.peek(syn::Ident) {
+            return Ok(Self::Element(Element::parse(input)?));
         }
 
-        while !block.is_empty() {
-            if block.peek(syn::LitStr) {
-                let text = block.parse::<syn::LitStr>()?.value();
-                match text.contains('{') {
-                    true => children.push(Self::TextFmt(text)),
-                    false => children.push(Self::Text(text)),
-                }
-            } else if block.peek(syn::Ident) {
-                children.push(block.parse::<Self>()?)
-            }
+        if input.fork().parse::<TextFmt>().is_ok() {
+            return Ok(Self::TextFmt(TextFmt::parse(input)?));
         }
 
-        Ok(Self::Element(ParseElement {
-            name: name.to_string(),
-            attributes,
-            children,
-        }))
+        if input.peek(Token![if]) {
+            return Ok(Self::IfExpr(IfExpr::parse(input)?));
+        }
+
+        if input.peek(Token![for]) {
+            return Ok(Self::ForLoop(ForLoop::parse(input)?));
+        }
+
+        Ok(Self::Text(Text::parse(input)?))
     }
 }
 
-impl ToTokens for ParseNode {
+impl ToTokens for NodeTree {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         match self {
-            ParseNode::Element(element) => {
-                let name = element.name.as_str();
-                let attributes = element.attributes.as_slice();
-                let children = element.children.as_slice();
-
-                quote!(Node::Element(Element::new(#name)#(.attr(#attributes))*#(.child(#children))*))
-            }
-            ParseNode::Text(text) => quote!(Node::content(#text)),
-            ParseNode::TextFmt(text) => quote!(Node::content(format!(#text))),
-        }.to_tokens(tokens)
+            Self::Text(text) => text.to_tokens(tokens),
+            Self::TextFmt(fmt) => fmt.to_tokens(tokens),
+            Self::Element(element) => element.to_tokens(tokens),
+            Self::IfExpr(expr) => expr.to_tokens(tokens),
+            Self::ForLoop(forloop) => forloop.to_tokens(tokens),
+        }
     }
 }

@@ -17,6 +17,18 @@ impl Component {
         self
     }
 
+    pub fn merge(mut self, component: Self) -> Self {
+        self.insert(component);
+
+        self
+    }
+
+    pub fn insert(&mut self, component: Self) {
+        for node in component.0.into_iter() {
+            self.0.push(node);
+        }
+    }
+
     pub fn render(self) -> String {
         let mut result = String::new();
 
@@ -81,6 +93,18 @@ impl Element {
         self.children.push(child.into());
 
         self
+    }
+
+    pub fn merge(mut self, component: Component) -> Self {
+        for node in component.0.into_iter() {
+            self.children.push(node);
+        }
+
+        self
+    }
+
+    pub fn node(self, child: impl Into<Node>) -> Self {
+        self.child(child)
     }
 
     pub fn render(self) -> String {
