@@ -8,4 +8,5 @@ pub mod html {
 
 pub mod prelude {
     pub use crate::macros::rsx;
+    pub use cercis_html;
 }
