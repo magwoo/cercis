@@ -4,14 +4,14 @@ use proc_macro2::TokenTree;
 use crate::prelude::*;
 use crate::BodyCall;
 
-pub struct ForLoop {
+pub struct IfExpr {
     cond: Vec<TokenTree>,
-    body: BodyCall,
+    then_branch: BodyCall,
 }
 
-impl Parse for ForLoop {
+impl Parse for IfExpr {
     fn parse(input: ParseStream) -> Result<Self> {
-        input.parse::<Token![for]>()?;
+        input.parse::<Token![if]>()?;
 
         let mut cond = Vec::new();
 
@@ -22,21 +22,21 @@ impl Parse for ForLoop {
         let block;
         braced!(block in input);
 
-        let body = block.parse::<BodyCall>()?;
+        let then_branch = block.parse::<BodyCall>()?;
 
-        Ok(Self { cond, body })
+        Ok(Self { cond, then_branch })
     }
 }
 
-impl ToTokens for ForLoop {
+impl ToTokens for IfExpr {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         let cond = self.cond.as_slice();
-        let body = &self.body;
+        let then_branch = &self.then_branch;
 
         quote!(.merge({
-            let mut component = Component::new();
-            for #(#cond)* { component.insert(#body) }
-            component
+            let mut body = VBody::new();
+            if #(#cond)* { body = #then_branch }
+            body
         }))
         .to_tokens(tokens)
     }

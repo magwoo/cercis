@@ -2,16 +2,17 @@ use crate::attribute::Attribute;
 
 pub mod attribute;
 pub mod builder;
+pub mod component;
 pub mod prelude;
 
-pub struct Component(Vec<Node>);
+pub struct VBody(Vec<VNode>);
 
-impl Component {
+impl VBody {
     pub fn new() -> Self {
         Self(Vec::new())
     }
 
-    pub fn node(mut self, node: Node) -> Self {
+    pub fn node(mut self, node: VNode) -> Self {
         self.0.push(node);
 
         self
@@ -40,19 +41,19 @@ impl Component {
     }
 }
 
-impl Default for Component {
+impl Default for VBody {
     fn default() -> Self {
         Self::new()
     }
 }
 
-pub enum Node {
-    Element(Element),
+pub enum VNode {
+    Element(VElement),
     Content(String),
 }
 
-impl Node {
-    pub fn element(element: impl Into<Element>) -> Self {
+impl VNode {
+    pub fn element(element: impl Into<VElement>) -> Self {
         Self::Element(element.into())
     }
 
@@ -68,13 +69,17 @@ impl Node {
     }
 }
 
-pub struct Element {
-    pub name: String,
-    pub attributes: Vec<Attribute>,
-    pub children: Vec<Node>,
+pub struct Component {
+    pub func: Box<dyn Fn() -> VBody>,
 }
 
-impl Element {
+pub struct VElement {
+    pub name: String,
+    pub attributes: Vec<Attribute>,
+    pub children: Vec<VNode>,
+}
+
+impl VElement {
     pub fn new(element: impl Into<String>) -> Self {
         Self {
             name: element.into(),
@@ -89,13 +94,13 @@ impl Element {
         self
     }
 
-    pub fn child(mut self, child: impl Into<Node>) -> Self {
+    pub fn child(mut self, child: impl Into<VNode>) -> Self {
         self.children.push(child.into());
 
         self
     }
 
-    pub fn merge(mut self, component: Component) -> Self {
+    pub fn merge(mut self, component: VBody) -> Self {
         for node in component.0.into_iter() {
             self.children.push(node);
         }
@@ -103,7 +108,7 @@ impl Element {
         self
     }
 
-    pub fn node(self, child: impl Into<Node>) -> Self {
+    pub fn node(self, child: impl Into<VNode>) -> Self {
         self.child(child)
     }
 

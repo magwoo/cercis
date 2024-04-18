@@ -28,7 +28,7 @@ impl ToTokens for Element {
         let children = self.children.as_slice();
 
         quote!(
-            .node(Node::element(Element::new(#name)#(#children)*))
+            .node(VNode::element(VElement::new(#name)#(#children)*))
         )
         .to_tokens(tokens)
     }

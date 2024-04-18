@@ -1,3 +1,4 @@
+use component::Component;
 use element::Element;
 use expr::IfExpr;
 use fmt::TextFmt;
@@ -6,6 +7,7 @@ use text::Text;
 
 use crate::prelude::*;
 
+mod component;
 mod element;
 mod expr;
 mod fmt;
@@ -17,13 +19,19 @@ pub enum NodeTree {
     TextFmt(TextFmt),
     IfExpr(IfExpr),
     ForLoop(ForLoop),
+    Component(Component),
     Element(Element),
 }
 
 impl Parse for NodeTree {
     fn parse(input: ParseStream) -> Result<Self> {
         if input.peek(syn::Ident) {
-            return Ok(Self::Element(Element::parse(input)?));
+            let name = input.fork().parse::<syn::Ident>()?.to_string();
+
+            return match name.chars().next().unwrap().is_ascii_uppercase() {
+                true => Ok(Self::Component(Component::parse(input)?)),
+                false => Ok(Self::Element(Element::parse(input)?)),
+            };
         }
 
         if input.fork().parse::<TextFmt>().is_ok() {
@@ -50,6 +58,7 @@ impl ToTokens for NodeTree {
             Self::Element(element) => element.to_tokens(tokens),
             Self::IfExpr(expr) => expr.to_tokens(tokens),
             Self::ForLoop(forloop) => forloop.to_tokens(tokens),
+            Self::Component(component) => component.to_tokens(tokens),
         }
     }
 }

@@ -20,7 +20,7 @@ impl ToTokens for TextFmt {
         let text = self.0.as_str();
 
         quote!(
-            .node(Node::content(format!(#text)))
+            .node(VNode::content(format!(#text)))
         )
         .to_tokens(tokens)
     }

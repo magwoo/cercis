@@ -15,7 +15,7 @@ impl ToTokens for Text {
         let text = self.0.as_str();
 
         quote!(
-            .node(Node::content(#text))
+            .node(VNode::content(#text))
         )
         .to_tokens(tokens)
     }

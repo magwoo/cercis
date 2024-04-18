@@ -1,12 +1,5 @@
-use proc_macro::TokenStream;
-use proc_macro2::TokenStream as TokenStream2;
-use quote::quote;
-use quote::ToTokens;
-use syn::parse::Parse;
-use syn::parse::ParseStream;
-use syn::Result;
-
 use crate::node::NodeTree;
+use crate::prelude::*;
 
 mod node;
 mod prelude;
@@ -31,7 +24,7 @@ impl ToTokens for BodyCall {
 
         quote!({
             use cercis_html::*;
-            Component::new()#(#nodes)*
+            VBody::new()#(#nodes)*
         })
         .to_tokens(tokens)
     }

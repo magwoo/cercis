@@ -1,11 +1,15 @@
 [workspace]
 resolver = "2"
 members = [ 
-  "crates/cercis",
-  "crates/html", "crates/proc",
-  "crates/rsx"
+  "cercis",
+  "html",
+  "rsx"
 ]
 
 [workspace.package]
 version = "0.1.0"
+
+[workspace.dependencies]
+cercis-rsx = { path = "rsx" }
+cercis-html = { path = "html" }
 

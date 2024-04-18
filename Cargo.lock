@@ -5,18 +5,14 @@ version = 3
 [[package]]
 name = "cercis"
 version = "0.1.0"
+dependencies = [
+ "cercis-html",
+ "cercis-rsx",
+]
 
 [[package]]
 name = "cercis-html"
 version = "0.1.0"
-
-[[package]]
-name = "cercis-proc"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "syn",
-]
 
 [[package]]
 name = "cercis-rsx"
