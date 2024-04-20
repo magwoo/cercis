@@ -1,4 +1,5 @@
 use crate::attribute::Attribute;
+use crate::component::Component;
 
 pub mod attribute;
 pub mod builder;
@@ -49,6 +50,7 @@ impl Default for VBody {
 
 pub enum VNode {
     Element(VElement),
+    Component(Component),
     Content(String),
 }
 
@@ -64,13 +66,10 @@ impl VNode {
     pub fn render(self) -> String {
         match self {
             Self::Element(element) => element.render(),
+            Self::Component(component) => component.render(),
             Self::Content(content) => content,
         }
     }
-}
-
-pub struct Component {
-    pub func: Box<dyn Fn() -> VBody>,
 }
 
 pub struct VElement {
