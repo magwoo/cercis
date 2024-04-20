@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 cercis-rsx.workspace = true
+cercis-component.workspace = true
 cercis-html.workspace = true

@@ -1,24 +1,67 @@
+use proc_macro2::TokenTree;
+
 use crate::prelude::*;
 
 pub struct Component {
     name: syn::Ident,
+    props: Vec<Attribute>,
 }
 
 impl Parse for Component {
     fn parse(input: ParseStream) -> Result<Self> {
         let name = input.parse::<syn::Ident>()?;
+        let mut props = Vec::new();
 
         let block;
         braced!(block in input);
 
-        Ok(Self { name })
+        while block.peek(syn::Ident) && block.peek2(Token![:]) {
+            props.push(block.parse::<Attribute>()?);
+
+            if !block.is_empty() {
+                block.parse::<Token![,]>()?;
+            }
+        }
+
+        Ok(Self { name, props })
     }
 }
 
 impl ToTokens for Component {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         let name = &self.name;
+        let props = self.props.as_slice();
+        let struct_name = syn::Ident::new((name.to_string() + "Props").as_str(), name.span());
 
-        quote!(.node(VNode::Component(Component::new(#name)))).to_tokens(tokens)
+        quote!(.node(VNode::Component(Component::new(#name, Box::new(#struct_name { #(#props,)* })))))
+            .to_tokens(tokens)
+    }
+}
+
+struct Attribute {
+    name: syn::Ident,
+    value: Vec<TokenTree>,
+}
+
+impl Parse for Attribute {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let name = input.parse::<syn::Ident>()?;
+        input.parse::<Token![:]>()?;
+
+        let mut value = Vec::new();
+        while !input.is_empty() || input.peek(Token![,]) {
+            value.push(input.parse::<TokenTree>()?);
+        }
+
+        Ok(Self { name, value })
+    }
+}
+
+impl ToTokens for Attribute {
+    fn to_tokens(&self, tokens: &mut TokenStream2) {
+        let name = &self.name;
+        let value = &self.value;
+
+        quote!(#name: #(#value)*).to_tokens(tokens)
     }
 }
