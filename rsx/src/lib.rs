@@ -23,7 +23,7 @@ impl ToTokens for BodyCall {
         let nodes = self.0.as_slice();
 
         quote!({
-            use cercis_html::*;
+            use cercis_html::prelude::*;
             VBody::new()#(#nodes)*
         })
         .to_tokens(tokens)
