@@ -11,6 +11,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "cercis-component"
+version = "0.1.0"
+
+[[package]]
 name = "cercis-html"
 version = "0.1.0"
 

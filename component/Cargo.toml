@@ -1,0 +1,9 @@
+[package]
+name = "cercis-component"
+edition = "2021"
+version.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]

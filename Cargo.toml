@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [ 
+  "component", 
   "core",
   "html",
   "rsx"
@@ -11,5 +12,6 @@ version = "0.1.0"
 
 [workspace.dependencies]
 cercis-rsx = { path = "rsx" }
+cercis-component = { path = "component" }
 cercis-html = { path = "html" }
 
