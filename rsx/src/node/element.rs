@@ -56,7 +56,7 @@ struct Attribute {
 
 impl Parse for Attribute {
     fn parse(input: ParseStream) -> Result<Self> {
-        let name = input.parse::<syn::Ident>()?.to_string();
+        let name = input.parse::<syn::Ident>()?.to_string().replace('_', "-");
         input.parse::<Token![:]>()?;
         let value = input.parse::<syn::LitStr>()?.value();
 
