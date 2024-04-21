@@ -42,7 +42,7 @@ impl ToTokens for Component {
         let generics = &func.sig.generics;
 
         quote!(
-            struct #struct_name #generics {#(#props)*}
+            struct #struct_name #generics {#(#props,)*}
             #[allow(non_snake_case)]
             #vis fn #name #generics(props: Box<dyn std::any::Any>) -> VBody {
                 let #struct_name { #(#prop_names,)* } = props.downcast_ref().unwrap();

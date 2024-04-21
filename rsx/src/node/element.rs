@@ -1,3 +1,5 @@
+use proc_macro2::TokenTree;
+
 use crate::prelude::*;
 use crate::NodeTree;
 
@@ -51,19 +53,31 @@ impl ToTokens for Element {
 
 struct Attribute {
     name: String,
-    value: Option<String>,
+    value: Option<Value>,
 }
 
 impl Parse for Attribute {
     fn parse(input: ParseStream) -> Result<Self> {
         let name = input.parse::<syn::Ident>()?.to_string().replace('_', "-");
+        let mut value = None;
         input.parse::<Token![:]>()?;
-        let value = input.parse::<syn::LitStr>()?.value();
 
-        Ok(Self {
-            name,
-            value: Some(value),
-        })
+        if input.peek(syn::Lit) {
+            let lit = input.parse::<syn::Lit>()?;
+
+            value = Some(match lit {
+                syn::Lit::Str(str) => Value::Text(str.value()),
+                syn::Lit::Int(num) => Value::Text(num.to_string()),
+                syn::Lit::Float(num) => Value::Text(num.to_string()),
+                syn::Lit::Bool(bool) => Value::Text(bool.value.to_string()),
+                _ => return Err(syn::Error::new(lit.span(), "Unexpected value data type")),
+            })
+        } else {
+            let token = input.parse::<TokenTree>()?;
+            return Err(syn::Error::new(token.span(), "Unexpected value data type"));
+        }
+
+        Ok(Self { name, value })
     }
 }
 
@@ -75,6 +89,19 @@ impl ToTokens for Attribute {
         match value {
             Some(value) => quote!(.attr(Attribute::new(#name).value(#value))),
             None => quote!(.attr(Attribute::new(#name))),
+        }
+        .to_tokens(tokens)
+    }
+}
+
+enum Value {
+    Text(String),
+}
+
+impl ToTokens for Value {
+    fn to_tokens(&self, tokens: &mut TokenStream2) {
+        match self {
+            Self::Text(text) => quote!(#text),
         }
         .to_tokens(tokens)
     }
