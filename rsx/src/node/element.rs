@@ -59,7 +59,8 @@ struct Attribute {
 impl Parse for Attribute {
     fn parse(input: ParseStream) -> Result<Self> {
         let name = input.parse::<syn::Ident>()?.to_string().replace('_', "-");
-        let mut value = None;
+        #[allow(clippy::needless_late_init)]
+        let value;
         input.parse::<Token![:]>()?;
 
         if input.peek(syn::Lit) {

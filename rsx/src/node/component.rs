@@ -33,7 +33,7 @@ impl ToTokens for Component {
         let props = self.props.as_slice();
         let struct_name = syn::Ident::new((name.to_string() + "Props").as_str(), name.span());
 
-        quote!(.node(VNode::Component(Component::new(#name, Box::new(#struct_name { #(#props,)* })))))
+        quote!(.node(VNode::Component(Component::new(#name, Box::new(#struct_name::builder()#(.#props)*.build())))))
             .to_tokens(tokens)
     }
 }
@@ -49,7 +49,7 @@ impl Parse for Attribute {
         input.parse::<Token![:]>()?;
 
         let mut value = Vec::new();
-        while !input.is_empty() || input.peek(Token![,]) {
+        while !input.is_empty() && !input.peek(Token![,]) {
             value.push(input.parse::<TokenTree>()?);
         }
 
@@ -62,6 +62,6 @@ impl ToTokens for Attribute {
         let name = &self.name;
         let value = &self.value;
 
-        quote!(#name: #(#value)*).to_tokens(tokens)
+        quote!(#name(#(#value)*)).to_tokens(tokens)
     }
 }

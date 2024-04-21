@@ -7,3 +7,5 @@ edition = "2021"
 cercis-rsx.workspace = true
 cercis-component.workspace = true
 cercis-html.workspace = true
+typed-builder = "0.18.2"
+
