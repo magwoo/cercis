@@ -1,20 +1,20 @@
+use proc_macro2::Span;
 use std::str::FromStr;
 
 use crate::prelude::*;
 
 pub struct TextFmt {
-    format: String,
-    args: Vec<TokenStream2>,
+    pub format: String,
+    pub args: Vec<TokenStream2>,
 }
 
-impl Parse for TextFmt {
-    fn parse(input: ParseStream) -> Result<Self> {
-        let lit = input.parse::<syn::LitStr>()?;
+impl TextFmt {
+    pub fn from_str(format: &str) -> Result<Self> {
         let mut args = Vec::new();
-        let mut format = lit.value();
+        let mut format = format.to_string();
 
         if !format.contains('{') {
-            return Err(syn::Error::new(lit.span(), "Missing fmt's"));
+            return Err(syn::Error::new(Span::call_site(), "Missing fmt's"));
         }
 
         let mut counter = 0;
@@ -32,6 +32,13 @@ impl Parse for TextFmt {
         format = format.replace('[', "{").replace(']', "}");
 
         Ok(Self { format, args })
+    }
+}
+
+impl Parse for TextFmt {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let lit = input.parse::<syn::LitStr>()?;
+        Self::from_str(lit.value().as_str())
     }
 }
 

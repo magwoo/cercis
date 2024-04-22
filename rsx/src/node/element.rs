@@ -3,6 +3,8 @@ use proc_macro2::TokenTree;
 use crate::prelude::*;
 use crate::NodeTree;
 
+use super::fmt::TextFmt;
+
 pub struct Element {
     name: String,
     attributes: Vec<Attribute>,
@@ -67,6 +69,9 @@ impl Parse for Attribute {
             let lit = input.parse::<syn::Lit>()?;
 
             value = Some(match lit {
+                syn::Lit::Str(str) if str.value().contains('{') => {
+                    Value::TextFmt(TextFmt::from_str(str.value().as_str())?)
+                }
                 syn::Lit::Str(str) => Value::Text(str.value()),
                 syn::Lit::Int(num) => Value::Text(num.to_string()),
                 syn::Lit::Float(num) => Value::Text(num.to_string()),
@@ -97,12 +102,19 @@ impl ToTokens for Attribute {
 
 enum Value {
     Text(String),
+    TextFmt(TextFmt),
 }
 
 impl ToTokens for Value {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         match self {
             Self::Text(text) => quote!(#text),
+            Self::TextFmt(fmt) => {
+                let format = fmt.format.as_str();
+                let args = fmt.args.as_slice();
+
+                quote!(format!(#format, #(#args,)*))
+            }
         }
         .to_tokens(tokens)
     }
