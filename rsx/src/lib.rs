@@ -22,14 +22,11 @@ impl ToTokens for BodyCall {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         let nodes = self.0.as_slice();
 
-        let a = quote!({
+        quote!({
             use cercis_html::prelude::*;
             VBody::new()#(#nodes)*
-        });
-
-        eprintln!("a: {}", a);
-
-        a.to_tokens(tokens)
+        })
+        .to_tokens(tokens)
     }
 }
 
