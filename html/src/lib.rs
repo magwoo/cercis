@@ -8,6 +8,7 @@ pub mod builder;
 pub mod component;
 pub mod prelude;
 
+#[derive(Clone, Default)]
 pub struct VBody(Vec<VNode>);
 
 impl VBody {
@@ -44,12 +45,7 @@ impl VBody {
     }
 }
 
-impl Default for VBody {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
+#[derive(Clone)]
 pub enum VNode {
     Element(VElement),
     Component(Component),
@@ -65,6 +61,10 @@ impl VNode {
         Self::Content(text.into())
     }
 
+    pub fn component(component: Component) -> Self {
+        Self::Component(component)
+    }
+
     pub fn render(self) -> String {
         match self {
             Self::Element(element) => element.render(),
@@ -74,6 +74,7 @@ impl VNode {
     }
 }
 
+#[derive(Clone)]
 pub struct VElement {
     pub name: String,
     pub attributes: Vec<Attribute>,

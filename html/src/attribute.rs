@@ -1,5 +1,6 @@
 use html_escape::encode_safe;
 
+#[derive(Clone)]
 pub struct Attribute {
     pub name: String,
     pub value: Option<String>,

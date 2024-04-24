@@ -1,38 +1,48 @@
 use std::any::Any;
+use std::rc::Rc;
 
 use crate::VBody;
 
 pub trait RenderComponent: 'static {
-    fn render(&self, props: Box<dyn Any>) -> VBody;
+    fn render(&self, props: &dyn Any) -> VBody;
 }
 
-pub trait ComponentProps: 'static {}
+#[derive(Clone)]
+pub struct Component(Rc<ComponentInner>);
 
-impl ComponentProps for i32 {}
+impl Component {
+    pub fn new(func: impl RenderComponent, props: Box<dyn Any>) -> Self {
+        Self(Rc::new(ComponentInner::new(func, props)))
+    }
 
-pub struct Component {
+    pub fn render(&self) -> String {
+        self.0.render()
+    }
+}
+
+struct ComponentInner {
     func: Box<dyn RenderComponent>,
     props: Box<dyn Any>,
 }
 
-impl Component {
-    pub fn new(func: impl RenderComponent, props: Box<dyn Any>) -> Self {
+impl ComponentInner {
+    fn new(func: impl RenderComponent, props: Box<dyn Any>) -> Self {
         Self {
             func: Box::new(func),
             props,
         }
     }
 
-    pub fn render(self) -> String {
-        self.func.render(self.props).render()
+    fn render(&self) -> String {
+        self.func.render(self.props.as_ref()).render()
     }
 }
 
 impl<F> RenderComponent for F
 where
-    F: Fn(Box<dyn Any>) -> VBody + 'static,
+    F: Fn(&dyn Any) -> VBody + 'static,
 {
-    fn render(&self, props: Box<dyn Any>) -> VBody {
+    fn render(&self, props: &dyn Any) -> VBody {
         self(props)
     }
 }

@@ -10,6 +10,12 @@ impl Parse for Component {
     fn parse(input: ParseStream) -> Result<Self> {
         let func = input.parse::<syn::ItemFn>()?;
 
+        if let Some(async_token) = func.sig.asyncness {
+            let message = "Component cannot be async";
+
+            return Err(syn::Error::new(async_token.span, message));
+        }
+
         let name = &func.sig.ident;
         let first_char = name.to_string().chars().next().unwrap();
 
@@ -38,6 +44,7 @@ impl ToTokens for Component {
         let props = args.map(Prop::from).collect::<Vec<_>>();
 
         let body = func.block.as_ref();
+        let output = &func.sig.output;
         let name = &func.sig.ident;
         let vis = &func.vis;
         let struct_name = syn::Ident::new((name.to_string() + "Props").as_str(), name.span());
@@ -48,7 +55,7 @@ impl ToTokens for Component {
             #[builder(doc, crate_module_path=typed_builder)]
             struct #struct_name #generics {#(#props,)*}
             #[allow(non_snake_case)]
-            #vis fn #name #generics(props: Box<dyn std::any::Any>) -> VBody {
+            #vis fn #name #generics(props: &dyn std::any::Any) #output {
                 let #struct_name { #(#prop_names,)* } = props.downcast_ref().unwrap();
                 #body
             }
