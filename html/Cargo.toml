@@ -4,3 +4,4 @@ version.workspace = true
 edition = "2021"
 
 [dependencies]
+html-escape = "0.2.13"

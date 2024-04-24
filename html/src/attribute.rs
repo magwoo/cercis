@@ -1,3 +1,5 @@
+use html_escape::encode_safe;
+
 pub struct Attribute {
     pub name: String,
     pub value: Option<String>,
@@ -19,7 +21,7 @@ impl Attribute {
 
     pub fn render(self) -> String {
         match self.value {
-            Some(value) => format!(" {}='{}'", self.name, value),
+            Some(value) => format!(" {}='{}'", self.name, encode_safe(value.as_str())),
             None => format!(" {}", self.name),
         }
     }
