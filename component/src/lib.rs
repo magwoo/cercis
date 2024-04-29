@@ -91,6 +91,13 @@ impl ToTokens for Prop {
         let attr = quote!(#[builder(default, setter(strip_option))]);
         let prop = &self.prop;
 
+        if let FnArg::Typed(pt) = prop {
+            if pt.ty.to_token_stream().to_string().as_str() == "Component" {
+                quote!(#[builder(default = Component::default())] #prop).to_tokens(tokens);
+                return;
+            }
+        }
+
         match self.is_opt {
             true => quote!(#attr #prop),
             false => quote!(#prop),
