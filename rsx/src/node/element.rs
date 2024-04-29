@@ -23,6 +23,18 @@ impl Parse for Element {
         let block;
         braced!(block in input);
 
+        if name.as_str() == "doctype" {
+            return Ok(Self {
+                name: String::from("!DOCTYPE"),
+                attributes: vec![Attribute {
+                    name: String::from("html"),
+                    value: None,
+                }],
+                children: Vec::new(),
+                is_single: true,
+            });
+        }
+
         while block.peek(syn::Ident) && block.peek2(Token![:]) {
             attributes.push(block.parse::<Attribute>()?);
 
