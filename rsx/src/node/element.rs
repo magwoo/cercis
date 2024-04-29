@@ -5,10 +5,13 @@ use crate::NodeTree;
 
 use super::fmt::TextFmt;
 
+mod single;
+
 pub struct Element {
     name: String,
     attributes: Vec<Attribute>,
     children: Vec<NodeTree>,
+    is_single: bool,
 }
 
 impl Parse for Element {
@@ -32,10 +35,13 @@ impl Parse for Element {
             children.push(block.parse::<NodeTree>()?);
         }
 
+        let is_single = single::SINGLE_TAGS.contains(&name.as_str());
+
         Ok(Self {
             name,
             attributes,
             children,
+            is_single,
         })
     }
 }
@@ -46,8 +52,13 @@ impl ToTokens for Element {
         let attributes = self.attributes.as_slice();
         let children = self.children.as_slice();
 
+        let single = match self.is_single {
+            true => quote!(.single()),
+            false => quote!(),
+        };
+
         quote!(
-            .node(VNode::element(VElement::new(#name)#(#attributes)*#(#children)*))
+            .node(VNode::element(VElement::new(#name)#(#attributes)*#(#children)*#single))
         )
         .to_tokens(tokens)
     }
