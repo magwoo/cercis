@@ -79,6 +79,7 @@ pub struct VElement {
     pub name: String,
     pub attributes: Vec<Attribute>,
     pub children: Vec<VNode>,
+    pub is_single: bool,
 }
 
 impl VElement {
@@ -87,6 +88,7 @@ impl VElement {
             name: element.into(),
             attributes: Vec::new(),
             children: Vec::new(),
+            is_single: false,
         }
     }
 
@@ -114,6 +116,12 @@ impl VElement {
         self.child(child)
     }
 
+    pub fn single(mut self) -> Self {
+        self.is_single = true;
+
+        self
+    }
+
     pub fn render(self) -> String {
         let mut attrs = String::new();
 
@@ -127,7 +135,10 @@ impl VElement {
             content.push_str(child.render().as_str());
         }
 
-        format!("<{0}{1}>{2}</{0}>", self.name, attrs, content)
+        match self.is_single {
+            true => format!("<{0}{1}>", self.name, attrs),
+            false => format!("<{0}{1}>{2}</{0}>", self.name, attrs, content),
+        }
     }
 }
 
