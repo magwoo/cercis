@@ -1,4 +1,4 @@
-use html_escape::encode_safe;
+use html_escape::encode_quoted_attribute;
 
 use crate::attribute::Attribute;
 use crate::component::Component;
@@ -69,7 +69,7 @@ impl VNode {
         match self {
             Self::Element(element) => element.render(),
             Self::Component(component) => component.render(),
-            Self::Content(content) => encode_safe(content.as_str()).into_owned(),
+            Self::Content(content) => encode_quoted_attribute(content.as_str()).into_owned(),
         }
     }
 }

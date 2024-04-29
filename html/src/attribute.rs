@@ -1,4 +1,4 @@
-use html_escape::encode_safe;
+use html_escape::encode_quoted_attribute;
 
 #[derive(Clone)]
 pub struct Attribute {
@@ -22,7 +22,11 @@ impl Attribute {
 
     pub fn render(self) -> String {
         match self.value {
-            Some(value) => format!(" {}='{}'", self.name, encode_safe(value.as_str())),
+            Some(value) => format!(
+                " {}='{}'",
+                self.name,
+                encode_quoted_attribute(value.as_str())
+            ),
             None => format!(" {}", self.name),
         }
     }
