@@ -34,10 +34,10 @@ impl VBody {
         }
     }
 
-    pub fn render(self) -> String {
+    pub fn render(&self) -> String {
         let mut result = String::new();
 
-        for node in self.0 {
+        for node in self.0.iter() {
             result.push_str(node.render().as_str());
         }
 
@@ -65,7 +65,7 @@ impl VNode {
         Self::Component(component)
     }
 
-    pub fn render(self) -> String {
+    pub fn render(&self) -> String {
         match self {
             Self::Element(element) => element.render(),
             Self::Component(component) => component.render(),
@@ -122,16 +122,16 @@ impl VElement {
         self
     }
 
-    pub fn render(self) -> String {
+    pub fn render(&self) -> String {
         let mut attrs = String::new();
 
-        for attr in self.attributes {
+        for attr in self.attributes.iter() {
             attrs.push_str(attr.render().as_str())
         }
 
         let mut content = String::new();
 
-        for child in self.children {
+        for child in self.children.iter() {
             content.push_str(child.render().as_str());
         }
 

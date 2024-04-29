@@ -20,8 +20,8 @@ impl Attribute {
         self
     }
 
-    pub fn render(self) -> String {
-        match self.value {
+    pub fn render(&self) -> String {
+        match self.value.as_ref() {
             Some(value) => format!(
                 " {}='{}'",
                 self.name,
