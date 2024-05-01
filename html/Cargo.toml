@@ -2,6 +2,11 @@
 name = "cercis-html"
 version.workspace = true
 edition = "2021"
+license.workspace = true
+repository.workspace = true
+keywords.workspace = true
+description = "HTML generator tool for cercis"
+readme = "../README.md"
 
 [dependencies]
 html-escape = "0.2.13"

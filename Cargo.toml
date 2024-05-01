@@ -8,10 +8,13 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.1.4"
+repository = "https://github.com/magwoo/cercis"
+keywords = ["rsx", "html", "web", "template"]
+license = "MIT"
 
 [workspace.dependencies]
-cercis-rsx = { path = "rsx" }
-cercis-component = { path = "component" }
-cercis-html = { path = "html" }
+cercis-rsx = { path = "rsx", version = "0.1" }
+cercis-component = { path = "component", version = "0.1" }
+cercis-html = { path = "html", version = "0.1" }
 

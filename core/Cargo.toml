@@ -2,6 +2,11 @@
 name = "cercis"
 version.workspace = true
 edition = "2021"
+license.workspace = true
+repository.workspace = true
+keywords.workspace = true
+description = "html template in rust code"
+readme = "../README.md"
 
 [dependencies]
 cercis-rsx.workspace = true

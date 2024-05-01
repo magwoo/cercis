@@ -2,6 +2,11 @@
 name = "cercis-rsx"
 version.workspace = true
 edition = "2021"
+license.workspace = true
+repository.workspace = true
+keywords.workspace = true
+description = "rsx macro for cercis"
+readme = "../README.md"
 
 [lib]
 proc-macro = true
