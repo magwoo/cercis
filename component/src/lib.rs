@@ -92,8 +92,8 @@ impl ToTokens for Prop {
         let prop = &self.prop;
 
         if let FnArg::Typed(pt) = prop {
-            if pt.ty.to_token_stream().to_string().as_str() == "Component" {
-                quote!(#[builder(default = Component::default())] #prop).to_tokens(tokens);
+            if pt.ty.to_token_stream().to_string().as_str() == "Element" {
+                quote!(#[builder(default = Element::default())] #prop).to_tokens(tokens);
                 return;
             }
         }

@@ -15,5 +15,6 @@ pub mod html {
 pub mod prelude {
     pub use crate::macros::*;
     pub use cercis_html;
+    pub use cercis_html::VBody as Element;
     pub use typed_builder;
 }
