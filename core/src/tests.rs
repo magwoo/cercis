@@ -9,6 +9,22 @@ fn simple_tag() {
 }
 
 #[test]
+fn simple_single_tag() {
+    let correct = "<link>";
+    let render = rsx!(link { "unexpected content" }).render();
+
+    assert_eq!(render, correct)
+}
+
+#[test]
+fn doctype_tag() {
+    let correct = "<!DOCTYPE html>";
+    let render = rsx!(doctype {}).render();
+
+    assert_eq!(render, correct)
+}
+
+#[test]
 fn multiple_tags() {
     let correct = "<p>Tag 1</p><p>Tag 2</p>";
     let render = rsx!(p { "Tag 1" } p { "Tag 2" }).render();
