@@ -11,6 +11,21 @@ fn simple_tag() {
 }
 
 #[test]
+fn complex_tag() {
+    let correct = "<span id='hello' class='world' hello-world='true'>Content</span>";
+    let render = rsx!(span {
+        id: "hello",
+        class: "world",
+        hello_world: true,
+
+        "Content"
+    })
+    .render();
+
+    assert_eq!(render, correct)
+}
+
+#[test]
 fn simple_single_tag() {
     let correct = "<link>";
     let render = rsx!(link { "unexpected content" }).render();
