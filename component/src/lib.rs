@@ -64,7 +64,6 @@ impl ToTokens for Component {
     }
 }
 
-#[derive(Debug)]
 struct Prop {
     prop: FnArg,
     is_opt: bool,
