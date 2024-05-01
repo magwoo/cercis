@@ -4,7 +4,6 @@ use crate::attribute::Attribute;
 use crate::component::Component;
 
 pub mod attribute;
-pub mod builder;
 pub mod component;
 pub mod prelude;
 
