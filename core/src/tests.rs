@@ -1,3 +1,5 @@
+use rand::random;
+
 use crate::prelude::*;
 
 #[test]
@@ -33,9 +35,44 @@ fn multiple_tags() {
 }
 
 #[test]
-fn nested_tag() {
+fn nested_tags() {
     let correct = "<div><span>span 1</span><span>span 2</span></div>";
     let render = rsx!(div {span { "span 1" } span { "span 2" }}).render();
+
+    assert_eq!(render, correct)
+}
+
+#[test]
+fn format_tag() {
+    let num = random::<u8>();
+
+    let correct = format!("<h1>Random num is {num}</h1>");
+    let render = rsx!(h1 { "Random num is {num}" }).render();
+
+    assert_eq!(render, correct)
+}
+
+#[test]
+fn for_loop() {
+    let mut nums = Vec::new();
+
+    for _ in 0..10 {
+        nums.push(random::<u8>());
+    }
+
+    let mut correct = String::from("<h1>Random nums:</h1>");
+
+    for num in nums.iter() {
+        correct.push_str(format!("<span>{num}</span>").as_str());
+    }
+
+    let render = rsx!(
+        h1 { "Random nums:" }
+        for num in nums {
+            span { "{num}" }
+        }
+    )
+    .render();
 
     assert_eq!(render, correct)
 }

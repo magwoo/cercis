@@ -9,3 +9,6 @@ cercis-component.workspace = true
 cercis-html.workspace = true
 typed-builder = "0.18.2"
 
+[dev-dependencies]
+rand = "0.8.5"
+
