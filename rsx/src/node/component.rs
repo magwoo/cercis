@@ -1,16 +1,19 @@
 use proc_macro2::TokenTree;
 
 use crate::prelude::*;
+use crate::BodyCall;
 
 pub struct Component {
     name: syn::Ident,
     props: Vec<Attribute>,
+    children: Option<BodyCall>,
 }
 
 impl Parse for Component {
     fn parse(input: ParseStream) -> Result<Self> {
         let name = input.parse::<syn::Ident>()?;
         let mut props = Vec::new();
+        let mut children = None;
 
         let block;
         braced!(block in input);
@@ -23,7 +26,15 @@ impl Parse for Component {
             }
         }
 
-        Ok(Self { name, props })
+        if !block.is_empty() {
+            children = Some(block.parse::<BodyCall>()?);
+        }
+
+        Ok(Self {
+            name,
+            props,
+            children,
+        })
     }
 }
 
@@ -33,7 +44,12 @@ impl ToTokens for Component {
         let props = self.props.as_slice();
         let struct_name = syn::Ident::new((name.to_string() + "Props").as_str(), name.span());
 
-        quote!(.node(VNode::Component(Component::new(#name, Box::new(#struct_name::builder()#(.#props)*.build())))))
+        let children = match &self.children {
+            Some(body) => quote!(.children(#body)),
+            None => quote!(),
+        };
+
+        quote!(.node(VNode::Component(Component::new(#name, Box::new(#struct_name::builder()#(.#props)*#children.build())))))
             .to_tokens(tokens)
     }
 }
