@@ -5,7 +5,7 @@ edition = "2021"
 license.workspace = true
 repository.workspace = true
 keywords.workspace = true
-description = "html template in rust code"
+description = "Template engine for HTML in Rust"
 readme = "../README.md"
 
 [dependencies]
