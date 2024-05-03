@@ -8,8 +8,6 @@ cargo add cercis
 
 # Using examples
 
-For more examples, see [cercis](https://crates.io/crates/cercis)
-
 ## Formatting
 
 Format the data into a string as in ```format!()``` macro
