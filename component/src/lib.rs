@@ -53,7 +53,7 @@ impl ToTokens for Component {
         quote!(
             #[derive(typed_builder::TypedBuilder)]
             #[builder(doc, crate_module_path=typed_builder)]
-            struct #struct_name #generics {#(#props,)*}
+            #vis struct #struct_name #generics {#(#props,)*}
             #[allow(non_snake_case)]
             #vis fn #name #generics(props: &dyn std::any::Any) #output {
                 let #struct_name { #(#prop_names,)* } = props.downcast_ref().unwrap();
