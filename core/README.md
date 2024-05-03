@@ -6,8 +6,6 @@ Template engine for HTML in Rust
 cargo add cercis
 ```
 
-> Used only with the [cercis](https://crates.io/crates/cercis) package
-
 # Using examples
 
 For more examples, see [cercis](https://crates.io/crates/cercis)
