@@ -35,7 +35,7 @@ impl Parse for Element {
             });
         }
 
-        while block.peek(syn::Ident) && block.peek2(Token![:]) {
+        while (block.peek(syn::Ident) || block.peek(syn::LitStr)) && block.peek2(Token![:]) {
             attributes.push(block.parse::<Attribute>()?);
 
             if !block.is_empty() {
@@ -83,7 +83,10 @@ struct Attribute {
 
 impl Parse for Attribute {
     fn parse(input: ParseStream) -> Result<Self> {
-        let name = input.parse::<syn::Ident>()?.to_string().replace('_', "-");
+        let name = match input.peek(syn::Ident) {
+            true => input.parse::<syn::Ident>()?.to_string().replace('_', "-"),
+            false => input.parse::<syn::LitStr>()?.value(),
+        };
         #[allow(clippy::needless_late_init)]
         let value;
         input.parse::<Token![:]>()?;
