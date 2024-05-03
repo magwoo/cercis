@@ -17,13 +17,18 @@ impl TextFmt {
             return Err(syn::Error::new(Span::call_site(), "Missing fmt's"));
         }
 
+        format = format.replace("{{", "[[").replace("}}", "]]");
+
         let mut counter = 0;
         while let Some(pos1) = format.find('{') {
             format.replace_range(pos1..=pos1, "[");
+
             if let Some(pos2) = format.find('}') {
                 let fmt = TokenStream2::from_str(&format[pos1 + 1..pos2])?;
+
                 format.replace_range(pos2..=pos2, "]");
                 format.replace_range(pos1 + 1..pos2, counter.to_string().as_str());
+
                 args.push(fmt);
                 counter += 1;
             }
