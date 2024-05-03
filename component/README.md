@@ -46,7 +46,7 @@ fn main() {
 
   let page = rsx!(div {
     MyComponent {
-        text: "{text}"
+        text: text
     }
   });
 
@@ -73,7 +73,7 @@ fn main() {
   let page = rsx!(div {
     MyComponent {}
     MyComponent {
-        text: "{text}"
+        text: text
     }
   });
 
