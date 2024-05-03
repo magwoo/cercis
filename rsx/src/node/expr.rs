@@ -1,3 +1,4 @@
+use proc_macro2::Delimiter;
 use proc_macro2::Group;
 use proc_macro2::TokenTree;
 
@@ -15,7 +16,11 @@ impl Parse for IfExpr {
 
         let mut cond = Vec::new();
 
-        while input.fork().parse::<Group>().is_err() {
+        while !input
+            .fork()
+            .parse::<Group>()
+            .is_ok_and(|g| g.delimiter() == Delimiter::Brace)
+        {
             cond.push(input.parse::<TokenTree>()?);
         }
 
