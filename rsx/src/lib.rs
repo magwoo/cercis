@@ -39,29 +39,35 @@ impl ToTokens for BodyCall {
 /// ## Formatting
 ///
 /// ```
+/// use cercis::prelude::*;
+///
 /// let text = "Hello World!";
-/// rsx!(h1 { "{text}" })
+/// rsx!(h1 { "{text}" });
 /// ```
 ///
 /// ## Nested
 ///
 /// ```
+/// use cercis::prelude::*;
+///
 /// let text = "Hello World!";
 /// rsx!(div {
 ///   p { "{text}" }
 ///   span { "Lorem ipsum" }
-/// })
+/// });
 /// ```
 ///
 /// ## Attributes
 ///
 /// ```
+/// use cercis::prelude::*;
+///
 /// let container_name = "main";
 /// rsx!(div {
-///   class: "container-{container-name}",
+///   class: "container-{container_name}",
 ///   
 ///   p { "Lorem ipsum" }
-/// })
+/// });
 /// ```
 #[proc_macro]
 pub fn rsx(input: TokenStream) -> TokenStream {

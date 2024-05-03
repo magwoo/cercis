@@ -33,6 +33,7 @@ dependencies = [
 name = "cercis-rsx"
 version = "0.1.9"
 dependencies = [
+ "cercis",
  "proc-macro2",
  "quote",
  "syn",
