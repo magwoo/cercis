@@ -8,16 +8,16 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.10"
+version = "0.2.1"
 repository = "https://github.com/magwoo/cercis"
 keywords = ["rsx", "html", "web", "template"]
 license = "MIT"
 
 [workspace.dependencies]
-cercis = { path = "core", version = "0.1" }
-cercis-rsx = { path = "rsx", version = "0.1" }
-cercis-component = { path = "component", version = "0.1" }
-cercis-html = { path = "html", version = "0.1" }
+cercis = { path = "core", version = "0.2" }
+cercis-rsx = { path = "rsx", version = "0.2" }
+cercis-component = { path = "component", version = "0.2" }
+cercis-html = { path = "html", version = "0.2" }
 proc-macro2 = "1"
 quote = "1"
 syn = { version = "2", features = ["full"] }
