@@ -6,7 +6,7 @@ license.workspace = true
 repository.workspace = true
 keywords.workspace = true
 description = "Template engine for HTML in Rust"
-readme = "../README.md"
+readme = "./README.md"
 
 [dependencies]
 cercis-rsx.workspace = true

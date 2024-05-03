@@ -6,7 +6,7 @@ license.workspace = true
 repository.workspace = true
 keywords.workspace = true
 description = "component macro for cercis"
-readme = "../README.md"
+readme = "./README.md"
 
 [lib]
 proc-macro = true
