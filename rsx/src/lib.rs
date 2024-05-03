@@ -30,7 +30,7 @@ impl ToTokens for BodyCall {
     }
 }
 
-/// Macro rsx! write HTML templates in Rust code like jsx
+/// Macro ```rsx!``` write HTML templates in Rust code like jsx
 ///
 /// > Return VBody struct that can render to string by ```.render()``` method
 ///

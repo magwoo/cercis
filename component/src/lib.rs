@@ -105,6 +105,52 @@ impl ToTokens for Prop {
     }
 }
 
+/// Macro ```#[component]``` write component for ```rsx!``` like default Rust function
+///
+/// > All components must start with a capital letter
+///
+/// # Examples
+///
+/// ## Declaration
+///
+/// ```
+/// use cercis::prelude::*;
+///
+/// #[component]
+/// fn MyComponent() -> Element {
+///   rsx!(h1 { "My component!" })
+/// }
+/// ```
+///
+/// ## Props
+///
+/// ```
+/// use cercis::prelude::*;
+///
+/// #[component]
+/// fn MyComponent<'a>(text: &'a str) -> Element {
+///   rsx!(div {
+///     h1 { "My component!" }
+///     p { "{text}" }
+///   })
+/// }
+/// ```
+///
+/// ## Optional props
+///
+/// ```
+/// use cercis::prelude::*;
+///
+/// #[component]
+/// fn MyComponent<'a>(text: Option<&'a str>) -> Element {
+///   let text = text.unwrap_or("empty");
+///
+///   rsx!(div {
+///     h1 { "My component!" }
+///     p { "{text}" }
+///   })
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn component(_: TokenStream, input: TokenStream) -> TokenStream {
     match syn::parse::<Component>(input.clone()) {
