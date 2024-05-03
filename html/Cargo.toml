@@ -9,4 +9,4 @@ description = "HTML generator tool for cercis"
 readme = "./README.md"
 
 [dependencies]
-html-escape = "0.2.13"
+html-escape = "0.2"

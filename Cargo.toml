@@ -17,4 +17,7 @@ license = "MIT"
 cercis-rsx = { path = "rsx", version = "0.1" }
 cercis-component = { path = "component", version = "0.1" }
 cercis-html = { path = "html", version = "0.1" }
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "2", features = ["full"] }
 
