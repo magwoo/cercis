@@ -30,6 +30,39 @@ impl ToTokens for BodyCall {
     }
 }
 
+/// Macro rsx! write HTML templates in Rust code like jsx
+///
+/// > Return VBody struct that can render to string by ```.render()``` method
+///
+/// # Examples
+///
+/// ## Formatting
+///
+/// ```
+/// let text = "Hello World!";
+/// rsx!(h1 { "{text}" })
+/// ```
+///
+/// ## Nested
+///
+/// ```
+/// let text = "Hello World!";
+/// rsx!(div {
+///   p { "{text}" }
+///   span { "Lorem ipsum" }
+/// })
+/// ```
+///
+/// ## Attributes
+///
+/// ```
+/// let container_name = "main";
+/// rsx!(div {
+///   class: "container-{container-name}",
+///   
+///   p { "Lorem ipsum" }
+/// })
+/// ```
 #[proc_macro]
 pub fn rsx(input: TokenStream) -> TokenStream {
     match syn::parse::<BodyCall>(input) {
