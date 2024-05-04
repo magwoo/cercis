@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "cercis"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "cercis-component",
  "cercis-html",
@@ -15,7 +15,7 @@ dependencies = [
 
 [[package]]
 name = "cercis-component"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "cercis",
  "proc-macro2",
@@ -24,15 +24,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "cercis-examples"
+version = "0.2.2"
+dependencies = [
+ "cercis",
+]
+
+[[package]]
 name = "cercis-html"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "html-escape",
 ]
 
 [[package]]
 name = "cercis-rsx"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "cercis",
  "proc-macro2",

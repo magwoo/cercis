@@ -22,3 +22,14 @@ proc-macro2 = "1"
 quote = "1"
 syn = { version = "2", features = ["full"] }
 
+[package]
+name = "cercis-examples"
+version.workspace = true
+edition = "2021"
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dev-dependencies]
+cercis.workspace = true
+
