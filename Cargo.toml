@@ -32,4 +32,6 @@ publish = false
 
 [dev-dependencies]
 cercis.workspace = true
+axum = "0.7.5"
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
 
