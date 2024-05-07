@@ -98,7 +98,7 @@ mod tests;
 /// });
 ///
 /// // render our page to string
-/// println!("{}", page.render())
+/// println!("{}", page.render());
 ///
 /// #[component]
 /// pub fn Page<'a>(title: Option<&'a str>, children: Element) -> Element {
