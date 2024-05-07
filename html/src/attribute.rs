@@ -4,6 +4,7 @@ use html_escape::encode_quoted_attribute;
 pub struct Attribute {
     pub name: String,
     pub value: Option<String>,
+    pub is_raw: bool,
 }
 
 impl Attribute {
@@ -11,6 +12,7 @@ impl Attribute {
         Self {
             name: name.into(),
             value: None,
+            is_raw: false,
         }
     }
 
@@ -20,13 +22,18 @@ impl Attribute {
         self
     }
 
+    pub fn raw(mut self) -> Self {
+        self.is_raw = true;
+
+        self
+    }
+
     pub fn render(&self) -> String {
         match self.value.as_ref() {
-            Some(value) => format!(
-                " {}='{}'",
-                self.name,
-                encode_quoted_attribute(value.as_str())
-            ),
+            Some(value) => match self.is_raw {
+                true => format!(" {}='{}'", self.name, value),
+                false => format!(" {}='{}'", self.name, encode_quoted_attribute(value)),
+            },
             None => format!(" {}", self.name),
         }
     }

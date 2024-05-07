@@ -6,12 +6,15 @@ use crate::prelude::*;
 pub struct TextFmt {
     pub format: String,
     pub args: Vec<TokenStream2>,
+    pub is_raw: bool,
 }
 
-impl TextFmt {
-    pub fn from_str(format: &str) -> Result<Self> {
+impl Parse for TextFmt {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let lit = input.parse::<syn::LitStr>()?;
+
         let mut args = Vec::new();
-        let mut format = format.to_string();
+        let mut format = lit.value().to_string();
 
         if !format.contains('{') {
             return Err(syn::Error::new(Span::call_site(), "Missing fmt's"));
@@ -35,15 +38,13 @@ impl TextFmt {
         }
 
         format = format.replace('[', "{").replace(']', "}");
+        let is_raw = lit.to_token_stream().to_string().starts_with('r');
 
-        Ok(Self { format, args })
-    }
-}
-
-impl Parse for TextFmt {
-    fn parse(input: ParseStream) -> Result<Self> {
-        let lit = input.parse::<syn::LitStr>()?;
-        Self::from_str(lit.value().as_str())
+        Ok(Self {
+            format,
+            args,
+            is_raw,
+        })
     }
 }
 
@@ -52,8 +53,13 @@ impl ToTokens for TextFmt {
         let format = self.format.as_str();
         let args = self.args.as_slice();
 
+        let raw_token = match self.is_raw {
+            true => quote!(.raw()),
+            false => quote!(),
+        };
+
         quote!(
-            .node(VNode::content(format!(#format, #(#args,)*)))
+            .node(VNode::content(VContent::new(format!(#format, #(#args,)*))#raw_token))
         )
         .to_tokens(tokens)
     }

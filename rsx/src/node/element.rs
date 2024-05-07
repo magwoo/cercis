@@ -29,6 +29,7 @@ impl Parse for Element {
                 attributes: vec![Attribute {
                     name: String::from("html"),
                     value: None,
+                    is_raw: false,
                 }],
                 children: Vec::new(),
                 is_single: true,
@@ -79,10 +80,13 @@ impl ToTokens for Element {
 struct Attribute {
     name: String,
     value: Option<Value>,
+    is_raw: bool,
 }
 
 impl Parse for Attribute {
     fn parse(input: ParseStream) -> Result<Self> {
+        let mut is_raw = false;
+
         let name = match input.peek(syn::Ident) {
             true => input.parse::<syn::Ident>()?.to_string().replace('_', "-"),
             false => input.parse::<syn::LitStr>()?.value(),
@@ -92,13 +96,19 @@ impl Parse for Attribute {
         input.parse::<Token![:]>()?;
 
         if input.peek(syn::Lit) {
+            let fork = input.fork();
             let lit = input.parse::<syn::Lit>()?;
 
             value = Some(match lit {
                 syn::Lit::Str(str) if str.value().contains('{') => {
-                    Value::TextFmt(TextFmt::from_str(str.value().as_str())?)
+                    let fmt = TextFmt::parse(&fork)?;
+                    is_raw = fmt.is_raw;
+                    Value::TextFmt(fmt)
                 }
-                syn::Lit::Str(str) => Value::Text(str.value()),
+                syn::Lit::Str(str) => {
+                    is_raw = str.to_token_stream().to_string().starts_with('r');
+                    Value::Text(str.value())
+                }
                 syn::Lit::Int(num) => Value::Text(num.to_string()),
                 syn::Lit::Float(num) => Value::Text(num.to_string()),
                 syn::Lit::Bool(bool) => Value::Text(bool.value.to_string()),
@@ -109,7 +119,11 @@ impl Parse for Attribute {
             return Err(syn::Error::new(token.span(), "Unexpected value data type"));
         }
 
-        Ok(Self { name, value })
+        Ok(Self {
+            name,
+            value,
+            is_raw,
+        })
     }
 }
 
@@ -118,8 +132,13 @@ impl ToTokens for Attribute {
         let name = self.name.as_str();
         let value = self.value.as_ref();
 
+        let raw_token = match self.is_raw {
+            true => quote!(.raw()),
+            false => quote!(),
+        };
+
         match value {
-            Some(value) => quote!(.attr(Attribute::new(#name).value(#value))),
+            Some(value) => quote!(.attr(Attribute::new(#name).value(#value)#raw_token)),
             None => quote!(.attr(Attribute::new(#name))),
         }
         .to_tokens(tokens)

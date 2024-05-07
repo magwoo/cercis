@@ -48,7 +48,7 @@ impl VBody {
 pub enum VNode {
     Element(VElement),
     Component(Component),
-    Content(String),
+    Content(VContent),
 }
 
 impl VNode {
@@ -56,8 +56,8 @@ impl VNode {
         Self::Element(element.into())
     }
 
-    pub fn content(text: impl Into<String>) -> Self {
-        Self::Content(text.into())
+    pub fn content(content: VContent) -> Self {
+        Self::Content(content)
     }
 
     pub fn component(component: Component) -> Self {
@@ -68,7 +68,35 @@ impl VNode {
         match self {
             Self::Element(element) => element.render(),
             Self::Component(component) => component.render(),
-            Self::Content(content) => encode_quoted_attribute(content.as_str()).into_owned(),
+            Self::Content(content) => content.render(),
+        }
+    }
+}
+
+#[derive(Clone)]
+pub struct VContent {
+    content: String,
+    is_raw: bool,
+}
+
+impl VContent {
+    pub fn new(content: impl Into<String>) -> Self {
+        Self {
+            content: content.into(),
+            is_raw: false,
+        }
+    }
+
+    pub fn raw(mut self) -> Self {
+        self.is_raw = true;
+
+        self
+    }
+
+    pub fn render(&self) -> String {
+        match self.is_raw {
+            true => self.content.to_string(),
+            false => encode_quoted_attribute(self.content.as_str()).to_string(),
         }
     }
 }
