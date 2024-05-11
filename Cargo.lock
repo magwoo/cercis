@@ -112,7 +112,7 @@ checksum = "065a29261d53ba54260972629f9ca6bffa69bac13cd1fed61420f7fa68b9f8bd"
 
 [[package]]
 name = "cercis"
-version = "0.2.3"
+version = "0.3.0"
 dependencies = [
  "cercis-component",
  "cercis-html",
@@ -122,7 +122,7 @@ dependencies = [
 
 [[package]]
 name = "cercis-component"
-version = "0.2.3"
+version = "0.3.0"
 dependencies = [
  "cercis",
  "proc-macro2",
@@ -132,7 +132,7 @@ dependencies = [
 
 [[package]]
 name = "cercis-examples"
-version = "0.2.3"
+version = "0.3.0"
 dependencies = [
  "axum",
  "cercis",
@@ -142,14 +142,14 @@ dependencies = [
 
 [[package]]
 name = "cercis-html"
-version = "0.2.3"
+version = "0.3.0"
 dependencies = [
  "html-escape",
 ]
 
 [[package]]
 name = "cercis-rsx"
-version = "0.2.3"
+version = "0.3.0"
 dependencies = [
  "cercis",
  "proc-macro2",
