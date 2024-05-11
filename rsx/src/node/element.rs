@@ -138,8 +138,8 @@ impl ToTokens for Attribute {
         };
 
         match value {
-            Some(value) => quote!(.attr(Attribute::new(#name).value(#value)#raw_token)),
-            None => quote!(.attr(Attribute::new(#name))),
+            Some(value) => quote!(.attr(VAttribute::new(#name).value(#value)#raw_token)),
+            None => quote!(.attr(VAttribute::new(#name))),
         }
         .to_tokens(tokens)
     }

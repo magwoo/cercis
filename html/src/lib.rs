@@ -1,11 +1,13 @@
 use html_escape::encode_quoted_attribute;
 
-use crate::attribute::Attribute;
-use crate::component::Component;
+use crate::attribute::VAttribute;
+use crate::component::VComponent;
 
 pub mod attribute;
 pub mod component;
 pub mod prelude;
+
+pub type Element = VBody;
 
 #[derive(Clone, Default)]
 pub struct VBody(Vec<VNode>);
@@ -47,7 +49,7 @@ impl VBody {
 #[derive(Clone)]
 pub enum VNode {
     Element(VElement),
-    Component(Component),
+    Component(VComponent),
     Content(VContent),
 }
 
@@ -60,7 +62,7 @@ impl VNode {
         Self::Content(content)
     }
 
-    pub fn component(component: Component) -> Self {
+    pub fn component(component: VComponent) -> Self {
         Self::Component(component)
     }
 
@@ -104,7 +106,7 @@ impl VContent {
 #[derive(Clone)]
 pub struct VElement {
     pub name: String,
-    pub attributes: Vec<Attribute>,
+    pub attributes: Vec<VAttribute>,
     pub children: Vec<VNode>,
     pub is_single: bool,
 }
@@ -119,7 +121,7 @@ impl VElement {
         }
     }
 
-    pub fn attr(mut self, attr: impl Into<Attribute>) -> Self {
+    pub fn attr(mut self, attr: impl Into<VAttribute>) -> Self {
         self.attributes.push(attr.into());
 
         self

@@ -1,13 +1,13 @@
 use html_escape::encode_quoted_attribute;
 
 #[derive(Clone)]
-pub struct Attribute {
+pub struct VAttribute {
     pub name: String,
     pub value: Option<String>,
     pub is_raw: bool,
 }
 
-impl Attribute {
+impl VAttribute {
     pub fn new(name: impl Into<String>) -> Self {
         Self {
             name: name.into(),

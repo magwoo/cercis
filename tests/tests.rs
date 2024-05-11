@@ -1,6 +1,5 @@
+use cercis::prelude::*;
 use rand::random;
-
-use crate::prelude::*;
 
 #[test]
 fn simple_tag() {

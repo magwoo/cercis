@@ -44,20 +44,31 @@ impl ToTokens for Component {
         let props = args.map(Prop::from).collect::<Vec<_>>();
 
         let body = func.block.as_ref();
-        let output = &func.sig.output;
         let name = &func.sig.ident;
         let vis = &func.vis;
-        let struct_name = syn::Ident::new((name.to_string() + "Props").as_str(), name.span());
+        let mod_name = format!("__{}_private", name.to_string().to_ascii_lowercase());
+        let mod_name = syn::Ident::new(mod_name.as_str(), name.span());
         let generics = &func.sig.generics;
 
         quote!(
-            #[derive(typed_builder::TypedBuilder)]
-            #[builder(doc, crate_module_path=typed_builder)]
-            #vis struct #struct_name #generics {#(#props,)*}
-            #[allow(non_snake_case)]
-            #vis fn #name #generics(props: &dyn std::any::Any) #output {
-                let #struct_name { #(#prop_names,)* } = props.downcast_ref().unwrap();
-                #body
+            #vis use #mod_name::#name;
+
+            mod #mod_name {
+                use ::cercis::system::*;
+                use ::cercis::prelude::*;
+
+                #[derive(typed_builder::TypedBuilder)]
+                #[builder(doc, crate_module_path=typed_builder)]
+                pub struct #name #generics {#(#props,)*}
+
+                impl #generics ::cercis::html::component::Component for #name #generics {
+                    fn render(&self) -> String {
+                        {
+                            let Self { #(#prop_names,)* } = self;
+                            #body
+                        }.render()
+                    }
+                }
             }
         )
         .to_tokens(tokens)

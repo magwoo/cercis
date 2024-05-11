@@ -1,18 +1,15 @@
-use std::any::Any;
 use std::rc::Rc;
 
-use crate::VBody;
-
-pub trait RenderComponent: 'static {
-    fn render(&self, props: &dyn Any) -> VBody;
+pub trait Component {
+    fn render(&self) -> String;
 }
 
 #[derive(Clone)]
-pub struct Component(Rc<ComponentInner>);
+pub struct VComponent(Rc<dyn Component>);
 
-impl Component {
-    pub fn new(func: impl RenderComponent, props: Box<dyn Any>) -> Self {
-        Self(Rc::new(ComponentInner::new(func, props)))
+impl VComponent {
+    pub fn new(inner: Rc<dyn Component>) -> Self {
+        Self(inner)
     }
 
     pub fn render(&self) -> String {
@@ -20,29 +17,54 @@ impl Component {
     }
 }
 
-struct ComponentInner {
-    func: Box<dyn RenderComponent>,
-    props: Box<dyn Any>,
-}
+// pub trait RenderComponent: 'static {
+//     fn render<'a, T>(&self, props: Props<'a, T>) -> VBody;
+// }
 
-impl ComponentInner {
-    fn new(func: impl RenderComponent, props: Box<dyn Any>) -> Self {
-        Self {
-            func: Box::new(func),
-            props,
-        }
-    }
+// pub struct Props<'a, T>(&'a T);
 
-    fn render(&self) -> String {
-        self.func.render(self.props.as_ref()).render()
-    }
-}
+// impl<'a, T> Props<'a, T> {
+//     pub fn new(props: &'a T) -> Self {
+//         Self(props)
+//     }
+// }
 
-impl<F> RenderComponent for F
-where
-    F: Fn(&dyn Any) -> VBody + 'static,
-{
-    fn render(&self, props: &dyn Any) -> VBody {
-        self(props)
-    }
-}
+// #[derive(Clone)]
+// pub struct Component<'a, T>(Rc<ComponentInner<'a, T>>);
+
+// impl<'a, T> Component<'a, T> {
+//     pub fn new(func: impl RenderComponent, props: &'a T) -> Self {
+//         Self(Rc::new(ComponentInner::new(func, props)))
+//     }
+
+//     pub fn render(&self) -> String {
+//         self.0.render()
+//     }
+// }
+
+// struct ComponentInner<'a, T> {
+//     func: Box<dyn RenderComponent>,
+//     props: Props<'a, T>,
+// }
+
+// impl<'a, T> ComponentInner<'a, T> {
+//     fn new(func: impl RenderComponent, props: &'a T) -> Self {
+//         Self {
+//             func: Box::new(func),
+//             props: Props::new(props),
+//         }
+//     }
+
+//     fn render(&self) -> String {
+//         self.func.render(self.props).render()
+//     }
+// }
+
+// impl<F> RenderComponent for F
+// where
+//     F: Fn(Props<'a, T>) -> VBody + 'static,
+// {
+//     fn render<'a, T>(&self, props: Props<'a, T>) -> VBody {
+//         self(props)
+//     }
+// }

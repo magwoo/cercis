@@ -64,11 +64,6 @@ fn Button<'a>(text: &'a str, children: Element) -> Element {
 ```
 */
 
-pub use typed_builder;
-
-#[cfg(test)]
-mod tests;
-
 /// Using macros ```rsx!()``` and ```#[component]```, you can create HTML pages directly in the Rust language
 ///
 /// # Examples
@@ -135,9 +130,12 @@ pub mod html {
     pub use cercis_html::prelude::*;
 }
 
+pub mod system {
+    pub use cercis_html;
+    pub use typed_builder;
+}
+
 pub mod prelude {
     pub use crate::macros::*;
-    pub use cercis_html;
-    pub use cercis_html::VBody as Element;
-    pub use typed_builder;
+    pub use cercis_html::Element;
 }

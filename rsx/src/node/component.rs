@@ -42,15 +42,17 @@ impl ToTokens for Component {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         let name = &self.name;
         let props = self.props.as_slice();
-        let struct_name = syn::Ident::new((name.to_string() + "Props").as_str(), name.span());
+        // let struct_name = syn::Ident::new((name.to_string() + "Props").as_str(), name.span());
 
         let children = match &self.children {
             Some(body) => quote!(.children(#body)),
             None => quote!(),
         };
 
-        quote!(.node(VNode::Component(Component::new(#name, Box::new(#struct_name::builder()#(.#props)*#children.build())))))
-            .to_tokens(tokens)
+        let component =
+            quote!(VComponent::new(std::rc::Rc::new(#name::builder()#(.#props)*#children.build())));
+
+        quote!(.node(VNode::Component(#component))).to_tokens(tokens)
     }
 }
 
