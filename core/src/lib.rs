@@ -126,15 +126,18 @@ pub mod macros {
     pub use cercis_rsx::rsx;
 }
 
+/// Re-export template build types from [`cercis-html`] for ```rsx!``` macro
 pub mod html {
     pub use cercis_html::prelude::*;
 }
 
+/// Re-export packages for ```rsx!``` and ```#[component]``` macro
 pub mod system {
     pub use cercis_html;
     pub use typed_builder;
 }
 
+/// Package prelude
 pub mod prelude {
     pub use crate::macros::*;
     pub use cercis_html::Element;
