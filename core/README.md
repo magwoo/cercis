@@ -237,7 +237,7 @@ fn main() {
 }
 
 #[component]
-pub fn Page<'a>(title: Option<&'a str>, children: Element) -> Element {
+pub fn Page<'a>(title: Option<&'a str>, head: Element, children: Element) -> Element {
     const META_CONTENT: &str = "witdh=device-width, initial-scale=1.0";
 
     rsx!(
@@ -251,6 +251,7 @@ pub fn Page<'a>(title: Option<&'a str>, children: Element) -> Element {
                     // interpolate META_CONTENT const into value like format!() macro
                     content: "{META_CONTENT}",
                 }
+                head
                 // declarate title if exists
                 if let Some(title) = title {
                     title { "{title}" }
