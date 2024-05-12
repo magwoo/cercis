@@ -53,6 +53,15 @@ impl ToTokens for Component {
         quote!(
             #vis use #mod_name::#name;
 
+            impl #generics ::cercis::html::component::Component for #name #generics {
+                fn render(&self) -> String {
+                    {
+                        let Self { #(#prop_names,)* } = self;
+                        #body
+                    }.render()
+                }
+            }
+
             mod #mod_name {
                 use ::cercis::system::*;
                 use ::cercis::prelude::*;
@@ -60,15 +69,6 @@ impl ToTokens for Component {
                 #[derive(typed_builder::TypedBuilder)]
                 #[builder(doc, crate_module_path=typed_builder)]
                 pub struct #name #generics {#(#props,)*}
-
-                impl #generics ::cercis::html::component::Component for #name #generics {
-                    fn render(&self) -> String {
-                        {
-                            let Self { #(#prop_names,)* } = self;
-                            #body
-                        }.render()
-                    }
-                }
             }
         )
         .to_tokens(tokens)
@@ -103,14 +103,14 @@ impl ToTokens for Prop {
 
         if let FnArg::Typed(pt) = prop {
             if pt.ty.to_token_stream().to_string().as_str() == "Element" {
-                quote!(#[builder(default = Element::default())] #prop).to_tokens(tokens);
+                quote!(#[builder(default = Element::default())] pub #prop).to_tokens(tokens);
                 return;
             }
         }
 
         match self.is_opt {
-            true => quote!(#attr #prop),
-            false => quote!(#prop),
+            true => quote!(#attr pub #prop),
+            false => quote!(pub #prop),
         }
         .to_tokens(tokens)
     }
