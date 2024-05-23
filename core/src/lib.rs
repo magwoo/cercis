@@ -53,7 +53,7 @@ let output = "<div><button class='component-button'>prev</button><button class='
 assert_eq!(page.render(), output);
 
 #[component]
-fn Button<'a>(text: &'a str, children: Element) -> Element {
+fn Button<'a>(text: &'a str, children: Element<'a>) -> Element {
     rsx!(button {
         class: "component-button",
 
@@ -96,7 +96,7 @@ fn Button<'a>(text: &'a str, children: Element) -> Element {
 /// println!("{}", page.render());
 ///
 /// #[component]
-/// pub fn Page<'a>(title: Option<&'a str>, children: Element) -> Element {
+/// pub fn Page<'a>(title: Option<&'a str>, children: Element<'a>) -> Element {
 ///     const META_CONTENT: &str = "witdh=device-width, initial-scale=1.0";
 ///
 ///     rsx!(
@@ -140,5 +140,6 @@ pub mod system {
 /// Package prelude
 pub mod prelude {
     pub use crate::macros::*;
+    pub use cercis_html::render::Render;
     pub use cercis_html::Element;
 }

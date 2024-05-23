@@ -38,11 +38,11 @@ impl ToTokens for IfExpr {
         let cond = self.cond.as_slice();
         let then_branch = &self.then_branch;
 
-        quote!(.merge({
+        quote!({
             let mut body = VBody::new();
             if #(#cond)* { body = #then_branch }
             body
-        }))
+        })
         .to_tokens(tokens)
     }
 }

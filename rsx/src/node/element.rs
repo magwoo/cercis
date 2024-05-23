@@ -66,14 +66,12 @@ impl ToTokens for Element {
         let children = self.children.as_slice();
 
         let single = match self.is_single {
-            true => quote!(.single()),
+            true => quote!(.single(true)),
             false => quote!(),
         };
 
-        quote!(
-            .node(VNode::element(VElement::new(#name)#(#attributes)*#(#children)*#single))
-        )
-        .to_tokens(tokens)
+        quote!(VElement::new(#name)#(.attr(#attributes))*#(.child(#children))*#single)
+            .to_tokens(tokens)
     }
 }
 
@@ -133,13 +131,13 @@ impl ToTokens for Attribute {
         let value = self.value.as_ref();
 
         let raw_token = match self.is_raw {
-            true => quote!(.raw()),
+            true => quote!(.raw(true)),
             false => quote!(),
         };
 
         match value {
-            Some(value) => quote!(.attr(VAttribute::new(#name).value(#value)#raw_token)),
-            None => quote!(.attr(VAttribute::new(#name))),
+            Some(value) => quote!(VAttribute::new(#name).value(#value)#raw_token),
+            None => quote!(VAttribute::new(#name)),
         }
         .to_tokens(tokens)
     }

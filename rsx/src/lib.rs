@@ -24,7 +24,7 @@ impl ToTokens for BodyCall {
 
         quote!({
             use ::cercis::html::*;
-            VBody::new()#(#nodes)*
+            VBody::new()#(.child(#nodes))*
         })
         .to_tokens(tokens)
     }

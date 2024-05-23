@@ -38,11 +38,11 @@ impl ToTokens for ForLoop {
         let cond = self.cond.as_slice();
         let body = &self.body;
 
-        quote!(.merge({
+        quote!({
             let mut body = VBody::new();
-            for #(#cond)* { body.insert(#body) }
+            for #(#cond)* { body = body.child(#body) }
             body
-        }))
+        })
         .to_tokens(tokens)
     }
 }

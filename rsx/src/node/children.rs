@@ -16,6 +16,6 @@ impl ToTokens for Children {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         let name = &self.ident;
 
-        quote!(.merge(#name.clone())).to_tokens(tokens)
+        quote!(#name).to_tokens(tokens)
     }
 }

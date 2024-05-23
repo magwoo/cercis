@@ -20,13 +20,10 @@ impl ToTokens for Text {
     fn to_tokens(&self, tokens: &mut TokenStream2) {
         let text = self.text.as_str();
         let raw_token = match self.is_raw {
-            true => quote!(.raw()),
+            true => quote!(.raw(true)),
             false => quote!(),
         };
 
-        quote!(
-            .node(VNode::content(VContent::new(#text)#raw_token))
-        )
-        .to_tokens(tokens)
+        quote!(VContent::new(#text)#raw_token).to_tokens(tokens)
     }
 }

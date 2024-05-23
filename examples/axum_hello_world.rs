@@ -27,7 +27,7 @@ async fn index() -> Html<String> {
 }
 
 #[component]
-pub fn Page<'a>(title: Option<&'a str>, children: Element) -> Element {
+pub fn Page<'a>(title: Option<&'a str>, children: Element<'a>) -> Element {
     const META_CONTENT: &str = "witdh=device-width, initial-scale=1.0";
 
     rsx!(
@@ -48,4 +48,3 @@ pub fn Page<'a>(title: Option<&'a str>, children: Element) -> Element {
 
     )
 }
-

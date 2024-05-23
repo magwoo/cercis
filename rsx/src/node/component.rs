@@ -50,9 +50,9 @@ impl ToTokens for Component {
         };
 
         let component =
-            quote!(VComponent::new(std::rc::Rc::new(#name::builder()#(.#props)*#children.build())));
+            quote!(VComponent::new(Box::new(#name::builder()#(.#props)*#children.build())));
 
-        quote!(.node(VNode::Component(#component))).to_tokens(tokens)
+        quote!(#component).to_tokens(tokens)
     }
 }
 

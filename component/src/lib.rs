@@ -46,30 +46,22 @@ impl ToTokens for Component {
         let body = func.block.as_ref();
         let name = &func.sig.ident;
         let vis = &func.vis;
-        let mod_name = format!("__{}_private", name.to_string().to_ascii_lowercase());
-        let mod_name = syn::Ident::new(mod_name.as_str(), name.span());
         let generics = &func.sig.generics;
 
         quote!(
-            #vis use #mod_name::#name;
+            #[derive(::cercis::system::typed_builder::TypedBuilder)]
+            #[builder(doc, crate_module_path=::cercis::system::typed_builder)]
+            #vis struct #name #generics {#(#props,)*}
 
             impl #generics ::cercis::html::component::Component for #name #generics {
-                fn render(&self) -> String {
-                    {
-                        let Self { #(#prop_names,)* } = self;
-                        #body
-                    }.render()
+                fn render(&self) -> Element {
+                    use ::cercis::system::*;
+                    use ::cercis::prelude::*;
+                    let Self { #(#prop_names,)* } = self;
+                    #body
                 }
             }
 
-            mod #mod_name {
-                use ::cercis::system::*;
-                use ::cercis::prelude::*;
-
-                #[derive(typed_builder::TypedBuilder)]
-                #[builder(doc, crate_module_path=typed_builder)]
-                pub struct #name #generics {#(#props,)*}
-            }
         )
         .to_tokens(tokens)
     }
@@ -102,15 +94,15 @@ impl ToTokens for Prop {
         let prop = &self.prop;
 
         if let FnArg::Typed(pt) = prop {
-            if pt.ty.to_token_stream().to_string().as_str() == "Element" {
-                quote!(#[builder(default = Element::default())] pub #prop).to_tokens(tokens);
+            if pt.ty.to_token_stream().to_string().contains("Element <") {
+                quote!(#[builder(default = Element::default())] #prop).to_tokens(tokens);
                 return;
             }
         }
 
         match self.is_opt {
-            true => quote!(#attr pub #prop),
-            false => quote!(pub #prop),
+            true => quote!(#attr #prop),
+            false => quote!(#prop),
         }
         .to_tokens(tokens)
     }

@@ -54,12 +54,12 @@ impl ToTokens for TextFmt {
         let args = self.args.as_slice();
 
         let raw_token = match self.is_raw {
-            true => quote!(.raw()),
+            true => quote!(.raw(true)),
             false => quote!(),
         };
 
         quote!(
-            .node(VNode::content(VContent::new(format!(#format, #(#args,)*))#raw_token))
+            VContent::new(format!(#format, #(#args,)*))#raw_token
         )
         .to_tokens(tokens)
     }
