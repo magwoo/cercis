@@ -158,7 +158,7 @@ fn MyComponent<'a>(text: Option<&'a str>) -> Element {
 
 ## Component with children
 
-the component can accept elements ```example: Element``` and children if you name the variable ```children: Element```
+the component can accept elements ```example: Element<'a>``` and children if you name the variable ```children: Element<'a>```
 
 > all ```Element``` types are optional
 
@@ -197,7 +197,7 @@ fn main() {
 }
 
 #[component]
-fn MyComponent(text: Element, children: Element) -> Element {
+fn MyComponent<'a>(text: Element<'a>, children: Element<'a>) -> Element {
     rsx!(div {
         class: "container",
 
@@ -237,7 +237,7 @@ fn main() {
 }
 
 #[component]
-pub fn Page<'a>(title: Option<&'a str>, children: Element) -> Element {
+pub fn Page<'a>(title: Option<&'a str>, children: Element<'a>) -> Element {
     const META_CONTENT: &str = "witdh=device-width, initial-scale=1.0";
 
     rsx!(
