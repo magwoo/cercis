@@ -86,7 +86,11 @@ impl Parse for Attribute {
         let mut is_raw = false;
 
         let name = match input.peek(syn::Ident) {
-            true => input.parse::<syn::Ident>()?.to_string().replace('_', "-"),
+            true => input
+                .parse::<syn::Ident>()?
+                .to_string()
+                .replace('_', "-")
+                .replace("r#", ""),
             false => input.parse::<syn::LitStr>()?.value(),
         };
         #[allow(clippy::needless_late_init)]
