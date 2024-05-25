@@ -10,7 +10,7 @@ members = [
 [workspace.package]
 version = "1.0.0"
 repository = "https://github.com/magwoo/cercis"
-keywords = ["rsx", "html", "web", "template", "jsx", "ssr"]
+keywords = ["rsx", "html", "web", "template", "jsx"]
 license = "MIT"
 
 [workspace.dependencies]
