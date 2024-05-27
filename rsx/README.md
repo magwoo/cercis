@@ -62,8 +62,6 @@ fn main() {
 
 Using the usual Rust if syntax, you can create branches
 
-> at the moment, ```else if``` ```else``` is not supported
-
 ```rust
 use cercis::prelude::*;
 
