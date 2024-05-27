@@ -19,8 +19,8 @@ impl Parse for Component {
         let name = &func.sig.ident;
         let first_char = name.to_string().chars().next().unwrap();
 
-        if first_char.is_ascii_lowercase() {
-            let message = "Expected first char at upper case";
+        if first_char.is_ascii_lowercase() || name.to_string().contains('_') {
+            let message = "Name of the component must be in PascalCase";
 
             return Err(syn::Error::new(name.span(), message));
         }
@@ -110,7 +110,7 @@ impl ToTokens for Prop {
 
 /// Macro ```#[component]``` write component for ```rsx!``` like default Rust function
 ///
-/// > All components must start with a capital letter
+/// > Name of the component must be in PascalCase
 ///
 /// # Examples
 ///
