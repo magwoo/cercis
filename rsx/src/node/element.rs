@@ -37,11 +37,15 @@ impl Parse for Element {
         }
 
         while (block.peek(syn::Ident) || block.peek(syn::LitStr)) && block.peek2(Token![:]) {
-            attributes.push(block.parse::<Attribute>()?);
+            let attr = block.parse::<Attribute>()?;
 
             if !block.is_empty() {
-                block.parse::<Token![,]>()?;
+                block
+                    .parse::<Token![,]>()
+                    .map_err(|_| syn::Error::new_spanned(&attr, "Missing trailing comma"))?;
             }
+
+            attributes.push(attr);
         }
 
         while !block.is_empty() {
@@ -65,13 +69,20 @@ impl ToTokens for Element {
         let attributes = self.attributes.as_slice();
         let children = self.children.as_slice();
 
-        let single = match self.is_single {
+        let attr_count = attributes.len();
+        let child_count = children.len();
+
+        let single_token = match self.is_single {
             true => quote!(.single(true)),
             false => quote!(),
         };
 
-        quote!(VElement::new(#name)#(.attr(#attributes))*#(.child(#children))*#single)
-            .to_tokens(tokens)
+        quote!(VElement::new_sized::<#child_count, #attr_count>(#name)
+            #(.attr(#attributes))*
+            #(.child(#children))*
+            #single_token
+        )
+        .to_tokens(tokens)
     }
 }
 

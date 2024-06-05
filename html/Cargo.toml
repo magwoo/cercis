@@ -10,3 +10,4 @@ readme = "./README.md"
 
 [dependencies]
 html-escape = "0.2"
+smallvec = { version = "1", features = ["const_generics"] }

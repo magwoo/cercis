@@ -1,4 +1,3 @@
-use proc_macro2::Span;
 use std::str::FromStr;
 
 use crate::prelude::*;
@@ -17,7 +16,7 @@ impl Parse for TextFmt {
         let mut format = lit.value().to_string();
 
         if !format.contains('{') {
-            return Err(syn::Error::new(Span::call_site(), "Missing fmt's"));
+            return Err(syn::Error::new_spanned(lit, "Missing fmt's"));
         }
 
         format = format.replace("{{", "[[").replace("}}", "]]");

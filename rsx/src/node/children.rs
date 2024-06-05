@@ -1,3 +1,5 @@
+use proc_macro2::TokenTree;
+
 use crate::prelude::*;
 
 pub struct Children {
@@ -6,9 +8,15 @@ pub struct Children {
 
 impl Parse for Children {
     fn parse(input: ParseStream) -> Result<Self> {
-        Ok(Self {
-            ident: input.parse::<syn::Ident>()?,
-        })
+        match input.peek(syn::Ident) {
+            true => Ok(Self {
+                ident: input.parse::<syn::Ident>()?,
+            }),
+            false => Err(syn::Error::new_spanned(
+                input.parse::<TokenTree>()?,
+                "Expected ident for add children",
+            )),
+        }
     }
 }
 

@@ -61,7 +61,6 @@ impl ToTokens for Component {
                     #body
                 }
             }
-
         )
         .to_tokens(tokens)
     }
