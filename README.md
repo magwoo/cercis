@@ -12,7 +12,7 @@ cargo add cercis
 
 Format the data into a string as in ```format!()``` macro
 
-> all data is transferred to the template by reference
+> all data is transferred to the template by
 
 ```rust
 use cercis::prelude::*;
