@@ -11,7 +11,7 @@ pub mod element;
 pub mod prelude;
 pub mod render;
 
-const CHLD_DEFAULT: usize = 9;
+const CHLD_DEFAULT: usize = 8;
 
 /// Type alias for [`VBody`] struct as ```VBody<'a>```
 pub type Element<'a, const CHLD: usize = CHLD_DEFAULT> = VBody<'a, CHLD>;
