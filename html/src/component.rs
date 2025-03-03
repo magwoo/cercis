@@ -12,7 +12,7 @@ impl<'a> VComponent<'a> {
     }
 }
 
-impl<'a> Render for VComponent<'a> {
+impl Render for VComponent<'_> {
     fn render(&self) -> String {
         self.0.render().render()
     }

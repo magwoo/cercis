@@ -71,7 +71,7 @@ impl<'a, const CHLD: usize, const ATTR: usize> VElement<'a, CHLD, ATTR> {
     }
 }
 
-impl<'a, const CHLD: usize, const ATTR: usize> Render for VElement<'a, CHLD, ATTR> {
+impl<const CHLD: usize, const ATTR: usize> Render for VElement<'_, CHLD, ATTR> {
     fn render(&self) -> String {
         let mut attrs = String::new();
         let mut children = String::new();

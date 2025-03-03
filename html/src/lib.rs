@@ -42,7 +42,7 @@ impl<'a, const CHLD: usize> VBody<'a, CHLD> {
     }
 }
 
-impl<'a, const CHLD: usize> Render for VBody<'a, CHLD> {
+impl<const CHLD: usize> Render for VBody<'_, CHLD> {
     fn render(&self) -> String {
         let mut body = String::new();
 
@@ -54,7 +54,7 @@ impl<'a, const CHLD: usize> Render for VBody<'a, CHLD> {
     }
 }
 
-impl<'a, const CHLD: usize> Render for &VBody<'a, CHLD> {
+impl<const CHLD: usize> Render for &VBody<'_, CHLD> {
     fn render(&self) -> String {
         (*self).render()
     }

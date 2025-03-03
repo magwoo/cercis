@@ -24,7 +24,7 @@ impl<'a> VContent<'a> {
     }
 }
 
-impl<'a> Render for VContent<'a> {
+impl Render for VContent<'_> {
     fn render(&self) -> String {
         match self.is_raw {
             Some(val) if val => self.content.to_string(),
