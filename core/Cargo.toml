@@ -12,5 +12,5 @@ readme = "./README.md"
 cercis-rsx.workspace = true
 cercis-component.workspace = true
 cercis-html.workspace = true
-typed-builder = "0.20"
+typed-builder = "0.21"
 
