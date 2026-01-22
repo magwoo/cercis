@@ -3,7 +3,7 @@ use crate::prelude::*;
 pub struct VComponent<'a>(Box<dyn Component + 'a>);
 
 pub trait Component {
-    fn render(&self) -> VBody;
+    fn render(&'_ self) -> VBody<'_>;
 }
 
 impl<'a> VComponent<'a> {
